@@ -5,7 +5,7 @@ use Mix.Config
 # The MIX_TEST_PARTITION environment variable can be used
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
-config :domain_app, Domain.Repo,
+config :elixir_app, Domain.Repo,
   username: "postgres",
   password: "postgres",
   database: "elixir_app_test#{System.get_env("MIX_TEST_PARTITION")}",
@@ -14,7 +14,7 @@ config :domain_app, Domain.Repo,
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :domain_app, Web.Endpoint,
+config :elixir_app, Web.Endpoint,
   http: [port: 4002],
   server: false
 

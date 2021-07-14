@@ -3,7 +3,7 @@ defmodule Domain.MixProject do
 
   def project do
     [
-      app: :domain_app,
+      app: :elixir_app,
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),

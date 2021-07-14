@@ -1,11 +1,12 @@
-defmodule Domain.Auth do
+defmodule Domain.Service.UserService do
   @moduledoc """
   The Auth context.
   """
 
   import Ecto.Query, warn: false
 
-  alias Domain.{User, Repo}
+  alias Domain.Repo
+  alias Domain.Model.User
 
   @type changeset_error :: {:error, Ecto.Changeset.t()}
 

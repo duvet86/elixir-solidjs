@@ -1,8 +1,8 @@
-defmodule Web.ApiController do
+defmodule Web.AuthController do
   use Web, :controller
 
   import Web.Plugs.Auth, only: [generate_token: 1]
-  import Domain.Auth, only: [get_by: 1]
+  import Domain.Service.UserService, only: [get_by: 1]
 
   def test(conn, _params) do
     json(conn, %{test: "Luca"})

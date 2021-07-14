@@ -1,4 +1,4 @@
-defmodule Domain.User do
+defmodule Domain.Model.User do
   use Ecto.Schema
 
   import Ecto.Changeset

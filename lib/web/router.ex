@@ -37,14 +37,14 @@ defmodule Web.Router do
   scope "/api/login", Web do
     pipe_through :api
 
-    post "/", ApiController, :login
+    post "/", AuthController, :login
   end
 
   # Api endpoints.
   scope "/api", Web do
     pipe_through [:api, :authenticate_api_user]
 
-    get "/test", ApiController, :test
+    get "/test", TestController, :index
   end
 
   # Generic enpoint for static app.

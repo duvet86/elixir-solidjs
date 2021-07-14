@@ -20,5 +20,5 @@ defmodule Web.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :domain_app
+  use Gettext, otp_app: :elixir_app
 end
