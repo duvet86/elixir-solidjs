@@ -1,5 +1,5 @@
-defmodule ElixirAppWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :elixir_app
+defmodule Web.Endpoint do
+  use Phoenix.Endpoint, otp_app: :domain_app
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -10,7 +10,7 @@ defmodule ElixirAppWeb.Endpoint do
     signing_salt: "HVvsikuE"
   ]
 
-  socket "/socket", ElixirAppWeb.UserSocket,
+  socket "/socket", Web.UserSocket,
     websocket: true,
     longpoll: false
 
@@ -22,7 +22,7 @@ defmodule ElixirAppWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :elixir_app,
+    from: :domain_app,
     gzip: false,
     only: ~w(assets favicon.ico robots.txt index.html)
 
@@ -30,7 +30,7 @@ defmodule ElixirAppWeb.Endpoint do
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
     plug Phoenix.CodeReloader
-    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :elixir_app
+    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :domain_app
   end
 
   plug Phoenix.LiveDashboard.RequestLogger,
@@ -48,5 +48,5 @@ defmodule ElixirAppWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug ElixirAppWeb.Router
+  plug Web.Router
 end

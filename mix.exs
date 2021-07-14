@@ -1,9 +1,9 @@
-defmodule ElixirApp.MixProject do
+defmodule Domain.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :elixir_app,
+      app: :domain_app,
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,7 +19,7 @@ defmodule ElixirApp.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {ElixirApp.Application, []},
+      mod: {Domain.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

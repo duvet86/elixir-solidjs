@@ -1,6 +1,6 @@
-defmodule ElixirApp do
+defmodule Domain do
   @moduledoc """
-  ElixirApp keeps the contexts that define your domain
+  Domain keeps the contexts that define your domain
   and business logic.
 
   Contexts are also responsible for managing your data, regardless

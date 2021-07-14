@@ -1,7 +1,7 @@
 use Mix.Config
 
 # Configure your database
-config :elixir_app, ElixirApp.Repo,
+config :domain_app, Domain.Repo,
   username: "postgres",
   password: "mysecretpassword",
   database: "elixir_app_dev",
@@ -15,7 +15,7 @@ config :elixir_app, ElixirApp.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :elixir_app, ElixirAppWeb.Endpoint,
+config :domain_app, Web.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,

@@ -5,7 +5,7 @@
 # Inside the script, you can read and write to any of your
 # repositories directly:
 #
-#     ElixirApp.Repo.insert!(%ElixirApp.SomeSchema{})
+#     Domain.Repo.insert!(%Domain.SomeSchema{})
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
@@ -16,5 +16,5 @@ users = [
 ]
 
 for user <- users do
-  {:ok, _} = ElixirApp.Auth.create_user(user)
+  {:ok, _} = Domain.Auth.create_user(user)
 end

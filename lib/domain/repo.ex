@@ -1,5 +1,5 @@
-defmodule ElixirApp.Repo do
+defmodule Domain.Repo do
   use Ecto.Repo,
-    otp_app: :elixir_app,
+    otp_app: :domain_app,
     adapter: Ecto.Adapters.Postgres
 end

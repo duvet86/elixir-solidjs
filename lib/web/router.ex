@@ -1,7 +1,7 @@
-defmodule ElixirAppWeb.Router do
-  use ElixirAppWeb, :router
+defmodule Web.Router do
+  use Web, :router
 
-  import ElixirAppWeb.Plugs.Auth, only: [authenticate_api_user: 2]
+  import Web.Plugs.Auth, only: [authenticate_api_user: 2]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,7 +13,7 @@ defmodule ElixirAppWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug ElixirAppWeb.Plugs.Auth
+    plug Web.Plugs.Auth
   end
 
   ### WARNING: routing order matters. ###
@@ -30,25 +30,25 @@ defmodule ElixirAppWeb.Router do
 
     scope "/" do
       pipe_through [:fetch_session, :protect_from_forgery]
-      live_dashboard "/dashboard", metrics: ElixirAppWeb.Telemetry
+      live_dashboard "/dashboard", metrics: Web.Telemetry
     end
   end
 
-  scope "/api/login", ElixirAppWeb do
+  scope "/api/login", Web do
     pipe_through :api
 
     post "/", ApiController, :login
   end
 
   # Api endpoints.
-  scope "/api", ElixirAppWeb do
+  scope "/api", Web do
     pipe_through [:api, :authenticate_api_user]
 
     get "/test", ApiController, :test
   end
 
   # Generic enpoint for static app.
-  scope "/*page", ElixirAppWeb do
+  scope "/*page", Web do
     pipe_through :browser
 
     get "/", PageController, :index

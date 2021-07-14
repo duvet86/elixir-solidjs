@@ -1,11 +1,11 @@
-defmodule ElixirApp.Auth do
+defmodule Domain.Auth do
   @moduledoc """
   The Auth context.
   """
 
   import Ecto.Query, warn: false
 
-  alias ElixirApp.{User, Repo}
+  alias Domain.{User, Repo}
 
   @type changeset_error :: {:error, Ecto.Changeset.t()}
 

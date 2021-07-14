@@ -1,12 +1,12 @@
-defmodule ElixirAppWeb do
+defmodule Web do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
 
   This can be used in your application as:
 
-      use ElixirAppWeb, :controller
-      use ElixirAppWeb, :view
+      use Web, :controller
+      use Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -19,19 +19,19 @@ defmodule ElixirAppWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: ElixirAppWeb
+      use Phoenix.Controller, namespace: Web
 
       import Plug.Conn
-      import ElixirAppWeb.Gettext
-      alias ElixirAppWeb.Router.Helpers, as: Routes
+      import Web.Gettext
+      alias Web.Router.Helpers, as: Routes
     end
   end
 
   def view do
     quote do
       use Phoenix.View,
-        root: "lib/elixir_app_web/templates",
-        namespace: ElixirAppWeb
+        root: "lib/web/templates",
+        namespace: Web
 
       # Import convenience functions from controllers
       import Phoenix.Controller,
@@ -54,7 +54,7 @@ defmodule ElixirAppWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import ElixirAppWeb.Gettext
+      import Web.Gettext
     end
   end
 
@@ -63,9 +63,9 @@ defmodule ElixirAppWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
-      import ElixirAppWeb.ErrorHelpers
-      import ElixirAppWeb.Gettext
-      alias ElixirAppWeb.Router.Helpers, as: Routes
+      import Web.ErrorHelpers
+      import Web.Gettext
+      alias Web.Router.Helpers, as: Routes
     end
   end
 

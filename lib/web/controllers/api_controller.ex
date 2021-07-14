@@ -1,8 +1,8 @@
-defmodule ElixirAppWeb.ApiController do
-  use ElixirAppWeb, :controller
+defmodule Web.ApiController do
+  use Web, :controller
 
-  import ElixirAppWeb.Plugs.Auth, only: [generate_token: 1]
-  import ElixirApp.Auth, only: [get_by: 1]
+  import Web.Plugs.Auth, only: [generate_token: 1]
+  import Domain.Auth, only: [get_by: 1]
 
   def test(conn, _params) do
     json(conn, %{test: "Luca"})
@@ -13,7 +13,7 @@ defmodule ElixirAppWeb.ApiController do
       nil ->
         conn
         |> put_status(:unauthorized)
-        |> put_view(ElixirAppWeb.ErrorView)
+        |> put_view(Web.ErrorView)
         |> render(:"401")
         # Stop any downstream transformations.
         |> halt()

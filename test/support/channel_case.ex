@@ -1,4 +1,4 @@
-defmodule ElixirAppWeb.ChannelCase do
+defmodule Web.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -11,7 +11,7 @@ defmodule ElixirAppWeb.ChannelCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use ElixirAppWeb.ChannelCase, async: true`, although
+  by setting `use Web.ChannelCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -21,18 +21,18 @@ defmodule ElixirAppWeb.ChannelCase do
     quote do
       # Import conveniences for testing with channels
       import Phoenix.ChannelTest
-      import ElixirAppWeb.ChannelCase
+      import Web.ChannelCase
 
       # The default endpoint for testing
-      @endpoint ElixirAppWeb.Endpoint
+      @endpoint Web.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ElixirApp.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Domain.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(ElixirApp.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Domain.Repo, {:shared, self()})
     end
 
     :ok

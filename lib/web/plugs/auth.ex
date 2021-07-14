@@ -1,4 +1,4 @@
-defmodule ElixirAppWeb.Plugs.Auth do
+defmodule Web.Plugs.Auth do
   @moduledoc """
   A module plug that verifies the bearer token in the request headers and
   assigns `:current_user`. The authorization header value may look like
@@ -38,7 +38,7 @@ defmodule ElixirAppWeb.Plugs.Auth do
     else
       conn
       |> put_status(:unauthorized)
-      |> put_view(ElixirAppWeb.ErrorView)
+      |> put_view(Web.ErrorView)
       |> render(:"401")
       # Stop any downstream transformations.
       |> halt()
@@ -50,13 +50,13 @@ defmodule ElixirAppWeb.Plugs.Auth do
   
   ## Examples
   
-      iex> ElixirAppWeb.API.Auth.generate_token(123)
+      iex> Web.API.Auth.generate_token(123)
       "xxxxxxx"
   
   """
   def generate_token(user_id) do
     Phoenix.Token.sign(
-      ElixirAppWeb.Endpoint,
+      Web.Endpoint,
       inspect(__MODULE__),
       user_id
     )
@@ -67,16 +67,16 @@ defmodule ElixirAppWeb.Plugs.Auth do
   
   ## Examples
   
-      iex> ElixirAppWeb.Plugs.Auth.verify_token("good-token")
+      iex> Web.Plugs.Auth.verify_token("good-token")
       {:ok, 1}
   
-      iex> ElixirAppWeb.Plugs.Auth.verify_token("bad-token")
+      iex> Web.Plugs.Auth.verify_token("bad-token")
       {:error, :invalid}
   
-      iex> ElixirAppWeb.Plugs.Auth.verify_token("old-token")
+      iex> Web.Plugs.Auth.verify_token("old-token")
       {:error, :expired}
   
-      iex> ElixirAppWeb.Plugs.Auth.verify_token(nil)
+      iex> Web.Plugs.Auth.verify_token(nil)
       {:error, :missing}
   
   """
@@ -85,7 +85,7 @@ defmodule ElixirAppWeb.Plugs.Auth do
     one_month = 30 * 24 * 60 * 60
 
     Phoenix.Token.verify(
-      ElixirAppWeb.Endpoint,
+      Web.Endpoint,
       inspect(__MODULE__),
       token,
       max_age: one_month
