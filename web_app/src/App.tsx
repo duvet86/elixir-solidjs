@@ -1,41 +1,27 @@
-import { useRef, SyntheticEvent } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import { ProvideAuth } from "./services/authProvider";
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
 
 function App() {
-  const emailRef = useRef<HTMLInputElement | null>(null);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
-
-  function handleSubmit(event: SyntheticEvent) {
-    event.preventDefault();
-
-    fetch("api/login", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: emailRef.current?.value,
-        password: passwordRef.current?.value,
-      }),
-    })
-      .then((resp) => {
-        if (!resp.ok) {
-          throw resp;
-        }
-        return resp.json();
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => console.error(err));
-  }
-
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" ref={emailRef} defaultValue="jane.doe@example.com" />
-      <input type="password" ref={passwordRef} defaultValue="password" />
-      <button type="submit">Submit</button>
-    </form>
+    <ProvideAuth>
+      <Router>
+        <div>
+          {/* <AuthButton /> */}
+          <Switch>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <ProtectedRoute path="/protected">
+              <Home />
+            </ProtectedRoute>
+          </Switch>
+        </div>
+      </Router>
+    </ProvideAuth>
   );
 }
 
