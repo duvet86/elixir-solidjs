@@ -1,10 +1,19 @@
-import { useContext, createContext, useState, ReactElement } from "react";
+import {
+  useContext,
+  createContext,
+  useState,
+  ReactElement,
+  useMemo,
+} from "react";
 import { postAync } from "./api";
 
-interface Auth {
-  user: string | null;
-  signinAsync: (credentials: Credentials, cb: () => void) => void;
-  signout: (cb: () => void) => void;
+interface AuthState {
+  token: string | null;
+}
+
+interface AuthDispatch {
+  signinAsync: (credentials: Credentials) => Promise<void>;
+  signoutAsync: () => Promise<void>;
 }
 
 interface Credentials {
@@ -12,14 +21,13 @@ interface Credentials {
   password: string;
 }
 
-/** For more details on
- * `authContext`, `ProvideAuth`, `useAuth` and `useProvideAuth`
- * refer to: https://usehooks.com/useAuth/
- */
-const authContext = createContext<Auth>({
-  user: null,
-  signinAsync: () => {},
-  signout: () => {},
+const AuthContextState = createContext<AuthState>({
+  token: null,
+});
+
+const AuthContextDispatch = createContext<AuthDispatch>({
+  signinAsync: () => Promise.resolve(),
+  signoutAsync: () => Promise.resolve(),
 });
 
 interface Props {
@@ -27,32 +35,44 @@ interface Props {
 }
 
 export function ProvideAuth({ children }: Props) {
-  const auth = useProvideAuth();
-  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("TOKEN")
+  );
+
+  const authDispatch = useMemo<AuthDispatch>(
+    () => ({
+      signinAsync: async (credentials: Credentials) => {
+        const { token } = await postAync<{ token: string }>(
+          "api/login",
+          credentials
+        );
+
+        localStorage.setItem("TOKEN", token);
+        setToken(token);
+      },
+      signoutAsync: () => {
+        localStorage.removeItem("TOKEN");
+        setToken(null);
+
+        return Promise.resolve();
+      },
+    }),
+    []
+  );
+
+  return (
+    <AuthContextDispatch.Provider value={authDispatch}>
+      <AuthContextState.Provider value={{ token }}>
+        {children}
+      </AuthContextState.Provider>
+    </AuthContextDispatch.Provider>
+  );
 }
 
-export function useAuth() {
-  return useContext(authContext);
+export function useAuthState() {
+  return useContext(AuthContextState);
 }
 
-function useProvideAuth() {
-  const [user, setUser] = useState<string | null>(null);
-
-  const signinAsync = async (credentials: Credentials, cb: () => void) => {
-    await postAync("api/login", credentials);
-
-    setUser("user");
-    cb();
-  };
-
-  const signout = (cb: () => void) => {
-    setUser(null);
-    cb();
-  };
-
-  return {
-    user,
-    signinAsync,
-    signout,
-  };
+export function useAuthDispatch() {
+  return useContext(AuthContextDispatch);
 }

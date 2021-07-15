@@ -1,33 +1,41 @@
 import { useRef, SyntheticEvent } from "react";
+import { useHistory, useLocation, Redirect } from "react-router-dom";
+import { useAuthDispatch, useAuthState } from "../../services/authProvider";
+
+interface LocationState {
+  from: { pathname: string };
+}
 
 export default function Login() {
+  const history = useHistory();
+  const location = useLocation<LocationState>();
+  const { signinAsync } = useAuthDispatch();
+  const { token } = useAuthState();
+
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
-  function handleSubmit(event: SyntheticEvent) {
+  const { from } = location.state || { from: { pathname: "/" } };
+
+  async function handleSubmit(event: SyntheticEvent) {
+    if (emailRef.current === null || passwordRef.current === null) {
+      throw Error();
+    }
+
     event.preventDefault();
 
-    fetch("api/login", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: emailRef.current?.value,
-        password: passwordRef.current?.value,
-      }),
-    })
-      .then((resp) => {
-        if (!resp.ok) {
-          throw resp;
-        }
-        return resp.json();
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => console.error(err));
+    const credentials = {
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+    };
+
+    await signinAsync(credentials);
+
+    history.replace(from);
+  }
+
+  if (token !== null) {
+    return <Redirect to="/" />;
   }
 
   return (

@@ -15,7 +15,7 @@ export async function postAync<T>(url: string, body: unknown): Promise<T> {
   try {
     const resp = await fetch(url, {
       ...commonHeaders(),
-      method: "GET",
+      method: "POST",
       body: JSON.stringify(body),
     });
 

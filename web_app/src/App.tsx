@@ -10,12 +10,11 @@ function App() {
     <ProvideAuth>
       <Router>
         <div>
-          {/* <AuthButton /> */}
           <Switch>
             <Route path="/login">
               <Login />
             </Route>
-            <ProtectedRoute path="/protected">
+            <ProtectedRoute path="/">
               <Home />
             </ProtectedRoute>
           </Switch>
