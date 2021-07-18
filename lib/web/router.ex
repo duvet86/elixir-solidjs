@@ -34,23 +34,24 @@ defmodule Web.Router do
     end
   end
 
-  scope "/api/login", Web do
+  scope "/api", Web do
     pipe_through :api
 
-    post "/", AuthController, :login
+    post "/login", AuthController, :login
+    get "/fetch", FetchController, :index
   end
 
   # Api endpoints.
   scope "/api", Web do
     pipe_through [:api, :authenticate_api_user]
-
-    get "/test", TestController, :index
   end
 
   # Generic enpoint for static app.
-  scope "/*page", Web do
-    pipe_through :browser
+  if Mix.env() in [:prod] do
+    scope "/*page", Web do
+      pipe_through :browser
 
-    get "/", PageController, :index
+      get "/", PageController, :index
+    end
   end
 end
