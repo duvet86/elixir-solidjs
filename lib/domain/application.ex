@@ -14,9 +14,11 @@ defmodule Domain.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Domain.PubSub},
       # Start the Endpoint (http/https)
-      Web.Endpoint
+      Web.Endpoint,
       # Start a worker by calling: Domain.Worker.start_link(arg)
       # {Domain.Worker, arg}
+      # {Domain.HttpClient, {:https, "raw.githubusercontent.com", 443}}
+      {Domain.HttpClient, {:https, "raw.githubusercontent.com", 443}}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
