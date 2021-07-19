@@ -1,4 +1,4 @@
-import { useRef, SyntheticEvent } from "react";
+import { useRef, SyntheticEvent, useState } from "react";
 import { useHistory, useLocation, Redirect } from "react-router-dom";
 import { useAuthDispatch, useAuthState } from "../../services/authProvider";
 
@@ -11,6 +11,7 @@ export default function Login() {
   const location = useLocation<LocationState>();
   const { signinAsync } = useAuthDispatch();
   const { token } = useAuthState();
+  const [isError, setIsError] = useState(false);
 
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -29,9 +30,12 @@ export default function Login() {
       password: passwordRef.current.value,
     };
 
-    await signinAsync(credentials);
-
-    history.replace(from);
+    try {
+      await signinAsync(credentials);
+      history.replace(from);
+    } catch (e) {
+      setIsError(true);
+    }
   }
 
   if (token !== null) {
@@ -43,6 +47,7 @@ export default function Login() {
       <input type="text" ref={emailRef} defaultValue="jane.doe@example.com" />
       <input type="password" ref={passwordRef} defaultValue="password" />
       <button type="submit">Submit</button>
+      {isError && <p style={{ color: "red" }}>Invalid email or password</p>}
     </form>
   );
 }
