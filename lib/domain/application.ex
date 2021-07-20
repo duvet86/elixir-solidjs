@@ -17,8 +17,8 @@ defmodule Domain.Application do
       Web.Endpoint,
       # Start a worker by calling: Domain.Worker.start_link(arg)
       # {Domain.Worker, arg}
-      # {Domain.HttpClient, {:https, "raw.githubusercontent.com", 443}}
-      {Domain.HttpClient, {:https, "raw.githubusercontent.com", 443}}
+      {Domain.HttpClient, {:https, "raw.githubusercontent.com", 443}},
+      Domain.RecurringJob
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
