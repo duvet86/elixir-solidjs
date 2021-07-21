@@ -1,4 +1,4 @@
-defmodule Domain.RecurringJob do
+defmodule Domain.FetchDataWorker do
   @moduledoc """
   Responsible of handling my job's schedule.
   
@@ -6,6 +6,8 @@ defmodule Domain.RecurringJob do
   use GenServer
 
   alias Domain.HttpClient
+  alias Domain.Repo
+  alias Domain.Model.ScheduledJob
 
   # Interface
 
@@ -23,18 +25,36 @@ defmodule Domain.RecurringJob do
 
   @impl true
   def handle_info(:perform, state) do
-    # https://github.com/owid/covid-19-data
-    {:ok, %{data: data}} =
-      HttpClient.request(
-        Domain.HttpClient,
-        "GET",
-        "/owid/covid-19-data/master/public/data/vaccinations/country_data/Afghanistan.csv",
-        [],
-        nil
-      )
+    {:ok, scheduledJob} =
+      %ScheduledJob{}
+      |> ScheduledJob.start_job_changeset(%{})
+      |> Repo.insert()
 
-    schedule_next_job()
-    {:noreply, state}
+    # https://github.com/owid/covid-19-data
+    case HttpClient.request(
+           Domain.HttpClient,
+           "GET",
+           "/owid/covid-19-data/master/public/data/vaccinations/country_data/Afghanistan.csv",
+           [],
+           nil
+         ) do
+      {:ok, %{data: _data}} ->
+        scheduledJob
+        |> ScheduledJob.finish_job_success_changeset()
+        |> Repo.update()
+
+        # Io.puts(data)
+
+        schedule_next_job()
+        {:noreply, state}
+
+      {:error, _} ->
+        scheduledJob
+        |> ScheduledJob.finish_job_error_changeset()
+        |> Repo.update()
+
+        {:noreply, state}
+    end
   end
 
   @impl true
