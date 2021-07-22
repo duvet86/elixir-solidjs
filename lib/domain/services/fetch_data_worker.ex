@@ -5,9 +5,10 @@ defmodule Domain.FetchDataWorker do
   """
   use GenServer
 
+  import Domain.Service.ScheduledJobService
+  import Domain.Service.VaccinationService
+
   alias Domain.HttpClient
-  alias Domain.Repo
-  alias Domain.Model.ScheduledJob
 
   # Interface
 
@@ -25,10 +26,7 @@ defmodule Domain.FetchDataWorker do
 
   @impl true
   def handle_info(:perform, state) do
-    {:ok, scheduledJob} =
-      %ScheduledJob{}
-      |> ScheduledJob.start_job_changeset(%{})
-      |> Repo.insert()
+    {:ok, scheduledJob} = start_job()
 
     # https://github.com/owid/covid-19-data
     case HttpClient.request(
@@ -38,20 +36,49 @@ defmodule Domain.FetchDataWorker do
            [],
            nil
          ) do
-      {:ok, %{data: _data}} ->
-        scheduledJob
-        |> ScheduledJob.finish_job_success_changeset()
-        |> Repo.update()
+      {:ok, %{data: data}} ->
+        {:ok, stream} =
+          data
+          |> StringIO.open()
 
-        # Io.puts(data)
+        {:ok, _} =
+          stream
+          |> IO.binstream(:line)
+          |> Stream.map(&String.trim(&1, "\n"))
+          |> Stream.map(&String.split(&1, ~r/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/))
+          |> Stream.filter(fn
+            row ->
+              Enum.at(row, -1) != ""
+          end)
+          |> Stream.take(-1)
+          |> Enum.map(fn [
+                           location,
+                           date,
+                           vaccine,
+                           source_url,
+                           total_vaccinations,
+                           people_vaccinated,
+                           people_fully_vaccinated
+                         ] ->
+            %{
+              location: location,
+              date: Date.from_iso8601!(date),
+              vaccine: String.trim(vaccine, "\""),
+              source_url: source_url,
+              total_vaccinations: String.to_integer(total_vaccinations),
+              people_vaccinated: String.to_integer(people_vaccinated),
+              people_fully_vaccinated: String.to_integer(people_fully_vaccinated)
+            }
+          end)
+          |> Enum.at(0)
+          |> create_vaccination
 
+        set_success_job(scheduledJob)
         schedule_next_job()
         {:noreply, state}
 
       {:error, _} ->
-        scheduledJob
-        |> ScheduledJob.finish_job_error_changeset()
-        |> Repo.update()
+        set_error_job(scheduledJob)
 
         {:noreply, state}
     end

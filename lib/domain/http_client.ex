@@ -1,7 +1,7 @@
 defmodule Domain.HttpClient do
   use GenServer
 
-  require Logger
+  # require Logger
 
   defstruct [:conn, requests: %{}]
 
@@ -41,14 +41,14 @@ defmodule Domain.HttpClient do
   def handle_call({:request, method, path, headers, body}, from, state) do
     case Mint.HTTP.request(state.conn, method, path, headers, body) do
       {:ok, conn, request_ref} ->
-        Logger.info(fn -> "the request_ref is: #{inspect(request_ref)}" end)
+        # Logger.info(fn -> "the request_ref is: #{inspect(request_ref)}" end)
         state = put_in(state.conn, conn)
         state = put_in(state.requests[request_ref], %{from: from, response: %{}})
         {:noreply, state}
 
       {:error, conn, reason} ->
         state = put_in(state.conn, conn)
-        Logger.error(fn -> "the request got an error: #{inspect(reason)}" end)
+        # Logger.error(fn -> "the request got an error: #{inspect(reason)}" end)
         {:reply, {:error, reason}, state}
     end
   end
@@ -66,32 +66,32 @@ defmodule Domain.HttpClient do
 
   @impl true
   def handle_info(message, state) do
-    Logger.info("the website responded: #{inspect(message)}")
+    # Logger.info("the website responded: #{inspect(message)}")
 
     case Mint.HTTP.stream(state.conn, message) do
       :unknown ->
-        _ = Logger.error(fn -> "Received unknown message: " <> inspect(message) end)
+        # _ = Logger.error(fn -> "Received unknown message: " <> inspect(message) end)
         {:noreply, state}
 
       {:ok, conn, responses} ->
-        _ = Logger.info(fn -> "Received responses: " <> inspect(responses) end)
+        # _ = Logger.info(fn -> "Received responses: " <> inspect(responses) end)
         state = put_in(state.conn, conn)
         state = Enum.reduce(responses, state, &process_response/2)
         {:noreply, state}
 
       {:error, conn, error, _responses} ->
         state = put_in(state.conn, conn)
-        _ = Logger.error(fn -> "Received error message: " <> inspect(error) end)
+        # _ = Logger.error(fn -> "Received error message: " <> inspect(error) end)
         {:noreply, state}
     end
   end
 
-  @impl true
-  def terminate(reason, state) do
-    Logger.info(fn ->
-      "the httpclient is done with reason #{inspect(reason)}, requests done: #{inspect(state)}"
-    end)
-  end
+  # @impl true
+  # def terminate(reason, state) do
+  #   Logger.info(fn ->
+  #     "the httpclient is done with reason #{inspect(reason)}, requests done: #{inspect(state)}"
+  #   end)
+  # end
 
   defp process_response({:status, request_ref, status}, state) do
     put_in(state.requests[request_ref].response[:status], status)
@@ -106,7 +106,7 @@ defmodule Domain.HttpClient do
   end
 
   defp process_response({:done, request_ref}, state) do
-    Logger.info("It's done! state: #{inspect(state)}")
+    # Logger.info("It's done! state: #{inspect(state)}")
     {%{response: response, from: from}, state} = pop_in(state.requests[request_ref])
     GenServer.reply(from, {:ok, response})
     state

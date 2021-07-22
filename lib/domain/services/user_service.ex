@@ -1,9 +1,7 @@
 defmodule Domain.Service.UserService do
   @moduledoc """
-  The Auth context.
+  The User service.
   """
-
-  import Ecto.Query, warn: false
 
   alias Domain.Repo
   alias Domain.Model.User
