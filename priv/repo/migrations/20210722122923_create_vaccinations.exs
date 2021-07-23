@@ -2,7 +2,7 @@ defmodule Domain.Repo.Migrations.CreateVaccinations do
   use Ecto.Migration
 
   def change do
-    create table("vaccinations") do
+    create table(:vaccinations) do
       add :location, :string
       add :date, :date
       add :vaccine, :string
@@ -13,5 +13,7 @@ defmodule Domain.Repo.Migrations.CreateVaccinations do
 
       timestamps()
     end
+
+    create unique_index(:vaccinations, [:location, :date])
   end
 end

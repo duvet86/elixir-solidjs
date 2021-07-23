@@ -16,5 +16,5 @@ users = [
 ]
 
 for user <- users do
-  {:ok, _} = Domain.Auth.create_user(user)
+  {:ok, _} = Domain.Service.UserService.create_user(user)
 end

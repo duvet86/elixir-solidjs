@@ -4,7 +4,7 @@ use Mix.Config
 config :elixir_app, Domain.Repo,
   username: "postgres",
   password: "mysecretpassword",
-  database: "elixir_app_dev",
+  database: "vaccinations_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
