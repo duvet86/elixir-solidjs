@@ -26,5 +26,6 @@ defmodule Domain.Model.Vaccination do
       :people_vaccinated,
       :people_fully_vaccinated
     ])
+    |> unique_constraint(:date)
   end
 end

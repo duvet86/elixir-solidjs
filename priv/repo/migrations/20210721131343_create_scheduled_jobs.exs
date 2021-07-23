@@ -4,9 +4,9 @@ defmodule Domain.Repo.Migrations.CreateScheduledJobs do
   def change do
     create table(:scheduled_jobs) do
       add :description, :string
-      add :started_at, :utc_datetime
+      add :started_at, :utc_datetime, null: false
       add :finished_at, :utc_datetime
-      add :status, :string
+      add :status, :string, null: false
     end
   end
 end

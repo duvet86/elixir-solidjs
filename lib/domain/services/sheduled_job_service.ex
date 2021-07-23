@@ -12,9 +12,9 @@ defmodule Domain.Service.ScheduledJobService do
 
   def list_finished_jobs, do: Repo.get_by(ScheduledJob, status: :success)
 
-  def start_job do
+  def start_job(description) do
     %ScheduledJob{}
-    |> ScheduledJob.start_job_changeset(%{})
+    |> ScheduledJob.start_job_changeset(%{description: description})
     |> Repo.insert()
   end
 
