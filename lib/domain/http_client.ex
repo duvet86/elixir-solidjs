@@ -79,7 +79,7 @@ defmodule Domain.HttpClient do
         state = Enum.reduce(responses, state, &process_response/2)
         {:noreply, state}
 
-      {:error, conn, error, _responses} ->
+      {:error, conn, _error, _responses} ->
         state = put_in(state.conn, conn)
         # _ = Logger.error(fn -> "Received error message: " <> inspect(error) end)
         {:noreply, state}

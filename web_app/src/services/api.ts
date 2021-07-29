@@ -30,6 +30,7 @@ function commonHeaders(): RequestInit {
     mode: "cors",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("TOKEN")}`,
     },
   };
 }

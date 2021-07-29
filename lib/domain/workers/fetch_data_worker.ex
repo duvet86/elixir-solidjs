@@ -39,6 +39,8 @@ defmodule Domain.Worker.FetchDataWorker do
     set_success_job(scheduled_job)
     schedule_next_job()
 
+    Logger.info("Finished job.")
+
     {:noreply, state}
   end
 
@@ -104,7 +106,10 @@ defmodule Domain.Worker.FetchDataWorker do
             |> IO.binstream(:line)
             |> Stream.map(&String.trim(&1, "\n"))
             |> Stream.drop(1)
-            |> Stream.map(&String.split(&1, ~r/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/))
+            |> Stream.map(
+              &(String.split(&1, ~r/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/)
+                |> Enum.take(7))
+            )
             |> Enum.map(fn [
                              location,
                              date,

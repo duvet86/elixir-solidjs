@@ -21,4 +21,21 @@ defmodule Domain.Service.VaccinationService do
     Vaccination
     |> Repo.insert_all(vaccinations)
   end
+
+  def get_all() do
+    Vaccination
+    |> Repo.all()
+  end
+
+  def get_by_location(location) do
+    Vaccination
+    |> where([v], fragment("lower(?)", v.location) == fragment("lower(?)", ^location))
+    |> Repo.all()
+  end
+
+  def get_between_dates(location, start_date, end_date) do
+    Vaccination
+    |> where([v], v.location == ^location and v.date >= ^start_date and v.date <= ^end_date)
+    |> Repo.all()
+  end
 end

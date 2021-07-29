@@ -44,6 +44,8 @@ defmodule Web.Router do
   # Api endpoints.
   scope "/api", Web do
     pipe_through [:api, :authenticate_api_user]
+
+    resources "/vaccinations", VaccinationController
   end
 
   # Generic enpoint for static app.
